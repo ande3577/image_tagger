@@ -151,6 +151,7 @@ def draw_image():
     global photo_image
     global image_list_box
     global directory_variable
+    global people
 
     for child in image_frame.winfo_children():
         child.destroy()
@@ -165,7 +166,12 @@ def draw_image():
         image.thumbnail((400, 300), Image.ANTIALIAS)
         photo_image = ImageTk.PhotoImage(image)
         photo_label = tk.Label(image_frame, text="Hello World!", image=photo_image)
-        photo_label.pack()
+        photo_label.grid(row=0,column=0)
+
+        row = 1
+        for p in people:
+            ttk.Checkbutton(image_frame, text=p).grid(row=row, column=0, sticky=[tk.W])
+            row += 1
 
 
 def on_image_select(evt):
@@ -205,7 +211,7 @@ if __name__ == "__main__":
     f2.columnconfigure(0, weight=1)
     f3 = tk.Frame(n)
 
-    image_list_box = tk.Listbox(f3)
+    image_list_box = tk.Listbox(f3, width=35)
     image_list_box.grid(row=0, column=0, sticky=[tk.W, tk.N, tk.S])
     image_list_box.bind('<<ListboxSelect>>', on_image_select)
 
