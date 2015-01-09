@@ -2,9 +2,12 @@ import tkinter as tk
 from tkinter import simpledialog, messagebox
 import tkinter.filedialog as filedialog
 import tkinter.ttk as ttk
+import os as os
 import json
+from PIL import Image, ImageTk
 
 PEOPLE_FILENAME = "settings.json"
+
 
 def load_settings():
     global people
@@ -27,6 +30,7 @@ def load_settings():
     except Exception as ex:
         pass
 
+
 def draw_people():
     global people_frame
     global people
@@ -47,6 +51,7 @@ def draw_people():
             b.grid(row=i, column=2, sticky=[tk.E])
 
         people_frame.columnconfigure(0, weight=1)
+
 
 def save_settings():
     global people
@@ -80,6 +85,7 @@ def edit_person_pressed(p):
     except ValueError:
         messagebox.showerror("Error", "%s not in list of people!" % p)
 
+
 def delete_person_pressed(p):
     global people
 
@@ -96,7 +102,8 @@ def browse_button_pressed():
     dir_ = filedialog.askdirectory()
     if dir_ and len(dir_) > 0:
         directory_variable.set(dir_)
-        save_settings()
+        directory_changed()
+
 
 def add_person_button_pressed():
     global people
@@ -116,12 +123,59 @@ def add_person_button_pressed():
     draw_people()
     save_settings()
 
+
 def directory_changed():
     save_settings()
+    build_image_list()
+
+
+def build_image_list():
+    global directory_variable
+    global image_list_box
+
+    image_list_box.delete(0, tk.END)
+
+    image_list = []
+    directory = directory_variable.get()
+    for root, dir, files in os.walk(directory):
+        relative_path = root.replace(directory, "")
+        print(relative_path)
+        for file in files:
+            if file.endswith( ('.png', '.jpg') ):
+                relative_filepath = os.path.join(relative_path, file)
+                image_list_box.insert(tk.END, relative_filepath)
+                image_list.append(relative_filepath)
+
+def draw_image():
+    global image_frame
+    global photo_image
+    global image_list_box
+    global directory_variable
+
+    for child in image_frame.winfo_children():
+        child.destroy()
+
+    directory = directory_variable.get()
+    selected_image = image_list_box.get(tk.ACTIVE)
+    if directory_variable.get() and len(directory) > 0 and selected_image and len(selected_image) > 0:
+        path = os.path.join(directory, selected_image)
+        path = path.replace("\\", "/")
+        print(path)
+        image = Image.open(path)
+        image.thumbnail((400, 300), Image.ANTIALIAS)
+        photo_image = ImageTk.PhotoImage(image)
+        photo_label = tk.Label(image_frame, text="Hello World!", image=photo_image)
+        photo_label.pack()
+
+
+def on_image_select(evt):
+    draw_image()
 
 if __name__ == "__main__":
     global people_frame
     global directory_variable
+    global image_list_box
+    global image_frame
 
     root = tk.Tk()
     n = ttk.Notebook(root)
@@ -150,9 +204,25 @@ if __name__ == "__main__":
 
     f2.columnconfigure(0, weight=1)
     f3 = tk.Frame(n)
+
+    image_list_box = tk.Listbox(f3)
+    image_list_box.grid(row=0, column=0, sticky=[tk.W, tk.N, tk.S])
+    image_list_box.bind('<<ListboxSelect>>', on_image_select)
+
+    scrollbar = tk.Scrollbar(f3, orient=tk.VERTICAL)
+    scrollbar.config(command=image_list_box.yview)
+    scrollbar.grid(row=0, column=1, sticky=[tk.W, tk.N, tk.S])
+    f3.rowconfigure(0, weight=1)
+    build_image_list()
+
+    image_frame = ttk.Frame(f3)
+    image_frame.grid(row=0, column=2)
+    draw_image()
+    f3.columnconfigure(2, weight=1)
+
     n.add(f3, text="Images")
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
-    root.wm_minsize(400, 300)
+    root.wm_minsize(800, 600)
 
     root.mainloop()
