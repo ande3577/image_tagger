@@ -88,7 +88,6 @@ def export_pressed(p):
             if p in tagged_members[image]:
                 input_file = os.path.join(directory_variable.get(), image)
                 output_file = os.path.join(output_directory, image)
-                print("Copy %s\n\t to %s\n" % (input_file, output_file))
                 dir = os.path.split(image)[0]
                 if len(dir) > 0:
                     try:
@@ -188,7 +187,6 @@ def build_image_list():
     directory = directory_variable.get()
     for root, dir, files in os.walk(directory):
         relative_path = root.replace(directory, "")
-        print(relative_path)
         for file in files:
             if file.endswith( ('.png', '.jpg') ):
                 relative_filepath = os.path.join(relative_path, file)
@@ -218,7 +216,6 @@ def draw_image():
     if directory_variable.get() and len(directory) > 0 and selected_image and len(selected_image) > 0:
         path = os.path.join(directory, selected_image)
         path = path.replace("\\", "/")
-        print(path)
         image = Image.open(path)
         image.thumbnail((400, 300), Image.ANTIALIAS)
         photo_image = ImageTk.PhotoImage(image)
@@ -241,10 +238,6 @@ def draw_image():
 def tagged_members_changed(image, person):
     global tagged_members
     global check_variable
-
-    print(image)
-    print(person)
-    print(check_variable[person].get())
 
     try:
         tagged_members[image]
