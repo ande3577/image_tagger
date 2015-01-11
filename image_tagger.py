@@ -194,7 +194,7 @@ def draw_image():
                 tagged = p in tagged_members[selected_image]
             except:
                 tagged = False
-            check_variable[p] = tk.StringVar()
+            check_variable[p] = tk.BooleanVar()
             check_variable[p].set(tagged)
             check_button = ttk.Checkbutton(image_frame, text=p, variable=check_variable[p], onvalue=True, offvalue=False, command= lambda image=selected_image, person=p: tagged_members_changed(image, person))
             check_button.grid(row=row, column=0, sticky=[tk.W])
@@ -213,10 +213,14 @@ def tagged_members_changed(image, person):
     except KeyError:
         tagged_members[image] = []
 
-    if check_variable[person].get():
-        tagged_members[image].append(person)
+    if check_variable[person].get() == True:
+        if not person in tagged_members[image]:
+            tagged_members[image].append(person)
     else:
-        tagged_members[image].remove(person)
+        try:
+            tagged_members[image].remove(person)
+        except ValueError:
+            pass
 
     save_settings()
 
