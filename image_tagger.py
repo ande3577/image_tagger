@@ -188,6 +188,7 @@ def directory_changed():
 def build_image_list():
     global directory_variable
     global image_list_box
+    global tagged_members
 
     image_list_box.delete(0, tk.END)
 
@@ -201,6 +202,17 @@ def build_image_list():
                 relative_filepath = re.sub("^[\\\\/]", "", relative_filepath)
                 image_list_box.insert(tk.END, relative_filepath)
                 image_list.append(relative_filepath)
+
+    tagged_deleted = False
+    new_tagged_members = tagged_members.copy()
+    for k in tagged_members.keys():
+        if k not in image_list:
+            del new_tagged_members[k]
+            tagged_deleted = True
+
+    if tagged_deleted:
+        tagged_members = new_tagged_members
+        save_settings()
 
 
 def draw_image():
@@ -305,6 +317,11 @@ def on_image_select(evt):
     draw_image()
 
 
+def refresh_pressed():
+    build_image_list()
+    draw_image()
+
+
 if __name__ == "__main__":
     global people_frame
     global directory_variable
@@ -347,6 +364,7 @@ if __name__ == "__main__":
     scrollbar = tk.Scrollbar(f3, orient=tk.VERTICAL)
     scrollbar.config(command=image_list_box.yview)
     scrollbar.grid(row=0, column=1, sticky=[tk.W, tk.N, tk.S])
+    ttk.Button(f3, text="Refresh", command=refresh_pressed).grid(row=1,column=0, sticky=[tk.S])
     f3.rowconfigure(0, weight=1)
     build_image_list()
 
