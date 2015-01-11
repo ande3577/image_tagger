@@ -74,6 +74,7 @@ def save_settings():
     except Exception as ex:
         messagebox.showerror("Error", ex)
 
+
 def export_pressed(p):
     global tagged_members
     global directory_variable
@@ -98,6 +99,7 @@ def export_pressed(p):
         messagebox.showinfo("Done", "Copy complete.")
     except Exception as ex:
         messagebox.showerror("Error", str(ex))
+
 
 def edit_person_pressed(p):
     global people
@@ -194,6 +196,7 @@ def build_image_list():
                 image_list_box.insert(tk.END, relative_filepath)
                 image_list.append(relative_filepath)
 
+
 def draw_image():
     global image_frame
     global photo_image
@@ -235,6 +238,7 @@ def draw_image():
             check_button.grid(row=row, column=0, sticky=[tk.W])
             row += 1
 
+
 def tagged_members_changed(image, person):
     global tagged_members
     global check_variable
@@ -274,7 +278,6 @@ def next_button_pressed():
         i += 1
     image_list_box.selection_set(i, None)
     draw_image()
-
 
 
 def on_image_select(evt):
