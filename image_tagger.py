@@ -215,7 +215,12 @@ def draw_image():
     button_frame.grid(row=0,column=0,sticky=[tk.N])
 
     directory = directory_variable.get()
-    selected_image = image_list_box.get(tk.ACTIVE)
+    try:
+        i = image_list_box.curselection()[0]
+    except IndexError:
+        i = 0
+    selected_image = image_list_box.get(i)
+
     if directory_variable.get() and len(directory) > 0 and selected_image and len(selected_image) > 0:
         path = os.path.join(directory, selected_image)
         path = path.replace("\\", "/")
@@ -263,20 +268,30 @@ def tagged_members_changed(image, person):
 def previous_button_pressed():
     global image_list_box
 
-    i = image_list_box.index(tk.ACTIVE)
-    if i > 0:
-        i -= 1
-    image_list_box.selection_set(i, None)
+    try:
+        i = image_list_box.curselection()[0]
+        image_list_box.selection_clear(i)
+        if i > 0:
+            i -= 1
+    except IndexError:
+        i = 0
+
+    image_list_box.selection_set(i)
     draw_image()
 
 
 def next_button_pressed():
     global image_list_box
 
-    i = image_list_box.index(tk.ACTIVE)
-    if i < image_list_box.index(tk.END):
-        i += 1
-    image_list_box.selection_set(i, None)
+    try:
+        i = image_list_box.curselection()[0]
+        image_list_box.selection_clear(i)
+        if i < image_list_box.index(tk.END):
+            i += 1
+    except IndexError:
+        i = 0
+
+    image_list_box.selection_set(i)
     draw_image()
 
 
@@ -330,7 +345,7 @@ if __name__ == "__main__":
     build_image_list()
 
     image_frame = ttk.Frame(f3)
-    image_frame.grid(row=0, column=2)
+    image_frame.grid(row=0, column=2, sticky=[tk.N])
     draw_image()
     f3.columnconfigure(2, weight=1)
 
