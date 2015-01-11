@@ -156,6 +156,11 @@ def draw_image():
     for child in image_frame.winfo_children():
         child.destroy()
 
+    button_frame = ttk.Frame(image_frame)
+    ttk.Button(button_frame, text="Previous", command=previous_button_pressed).grid(row=0,column=0)
+    ttk.Button(button_frame, text="Next", command=next_button_pressed).grid(row=0,column=1)
+    button_frame.grid(row=0,column=0,sticky=[tk.N])
+
     directory = directory_variable.get()
     selected_image = image_list_box.get(tk.ACTIVE)
     if directory_variable.get() and len(directory) > 0 and selected_image and len(selected_image) > 0:
@@ -166,16 +171,38 @@ def draw_image():
         image.thumbnail((400, 300), Image.ANTIALIAS)
         photo_image = ImageTk.PhotoImage(image)
         photo_label = tk.Label(image_frame, text="Hello World!", image=photo_image)
-        photo_label.grid(row=0,column=0)
+        photo_label.grid(row=1,column=0)
 
-        row = 1
+        row = 2
         for p in people:
             ttk.Checkbutton(image_frame, text=p).grid(row=row, column=0, sticky=[tk.W])
             row += 1
 
 
+def previous_button_pressed():
+    global image_list_box
+
+    i = image_list_box.index(tk.ACTIVE)
+    if i > 0:
+        i -= 1
+    image_list_box.selection_set(i, None)
+    draw_image()
+
+
+def next_button_pressed():
+    global image_list_box
+
+    i = image_list_box.index(tk.ACTIVE)
+    if i < image_list_box.index(tk.END):
+        i += 1
+    image_list_box.selection_set(i, None)
+    draw_image()
+
+
+
 def on_image_select(evt):
     draw_image()
+
 
 if __name__ == "__main__":
     global people_frame
