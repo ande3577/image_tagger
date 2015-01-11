@@ -5,9 +5,12 @@
 This is a python3-tkinter based utility for tagging users in a set of photos and 
 exporting it to a location.  It was a quick one-off script used for creating 
 media to distribute to the people inside the photos.  Releasing at as OSS in 
-case anyone else finds it useful.
+case anyone else finds it useful, or wants to use the code for reference.
 
 Works on windows, not sure about other platforms.
+
+The functionality and stability is somewhat limited and the code is rather ugly.
+It probably won't be significantly improved or supported in the future.
 
 ## Installation
 
