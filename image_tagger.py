@@ -76,6 +76,7 @@ def save_settings():
 
 def edit_person_pressed(p):
     global people
+    global tagged_members
 
     new_name = simpledialog.askstring("Name", "Enter new name", initialvalue=p)
     if new_name == None:
@@ -88,7 +89,10 @@ def edit_person_pressed(p):
 
     try:
         people[people.index(p)] = new_name
+        for k in tagged_members.keys():
+            tagged_members[k] = [new_name if x == p else x for x in tagged_members[k]]
         draw_people()
+        draw_image()
         save_settings()
     except ValueError:
         messagebox.showerror("Error", "%s not in list of people!" % p)
