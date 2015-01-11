@@ -115,9 +115,18 @@ def edit_person_pressed(p):
 
 def delete_person_pressed(p):
     global people
+    global tagged_members
+
+    if not messagebox.askyesno("Delete Person", "Are you sure you want to delete %s" % p):
+        return
 
     try:
         people.remove(p)
+        for i in tagged_members.keys():
+            try:
+                tagged_members[i].remove(p)
+            except ValueError:
+                pass
         draw_people()
         save_settings()
     except ValueError:
