@@ -83,15 +83,22 @@ def export_pressed(p):
         messagebox.showerror("Error.", "Must enter a directory")
         return
 
-    for image in tagged_members.keys():
-        if p in tagged_members[image]:
-            input_file = os.path.join(directory_variable.get(), image)
-            output_file = os.path.join(output_directory, image)
-            print("Copy %s\n\t to %s\n" % (input_file, output_file))
-            dir = os.path.split(image)[0]
-            if len(dir) > 0:
-                os.makedirs(os.path.join(output_directory, dir))
-            shutil.copyfile(input_file, output_file)
+    try:
+        for image in tagged_members.keys():
+            if p in tagged_members[image]:
+                input_file = os.path.join(directory_variable.get(), image)
+                output_file = os.path.join(output_directory, image)
+                print("Copy %s\n\t to %s\n" % (input_file, output_file))
+                dir = os.path.split(image)[0]
+                if len(dir) > 0:
+                    try:
+                        os.makedirs(os.path.join(output_directory, dir))
+                    except FileExistsError:
+                        pass
+                shutil.copyfile(input_file, output_file)
+        messagebox.showinfo("Done", "Copy complete.")
+    except Exception as ex:
+        messagebox.showerror("Error", str(ex))
 
 def edit_person_pressed(p):
     global people
