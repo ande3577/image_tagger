@@ -192,7 +192,7 @@ def build_image_list():
         for file in files:
             if file.endswith( ('.png', '.jpg') ):
                 relative_filepath = os.path.join(relative_path, file)
-                relative_filepath = re.sub("^[\\\\]", "", relative_filepath)
+                relative_filepath = re.sub("^[\\\\/]", "", relative_filepath)
                 image_list_box.insert(tk.END, relative_filepath)
                 image_list.append(relative_filepath)
 
