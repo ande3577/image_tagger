@@ -9,8 +9,9 @@ case anyone else finds it useful, or wants to use the code for reference.
 
 Works on windows, not sure about other platforms.
 
-The functionality and stability is somewhat limited and the code is rather ugly.
-It probably won't be significantly improved or supported in the future.
+The functionality, stability, and documentation are all very limited and the code
+is rather ugly.  It probably won't be significantly improved or supported in the
+future.
 
 ## Installation
 

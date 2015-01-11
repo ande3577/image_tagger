@@ -147,6 +147,11 @@ def delete_person_pressed(p):
 
 def browse_button_pressed():
     global directory_variable
+
+    if directory_variable.get() and len(directory_variable.get()) > 0:
+        if not messagebox.askyesno("Warning", "Changing the directory will erase all tagged photos.\nContinue?"):
+            return
+
     dir_ = filedialog.askdirectory()
     if dir_ and len(dir_) > 0:
         directory_variable.set(dir_)
@@ -177,6 +182,7 @@ def directory_changed():
     tagged_members = dict()
     save_settings()
     build_image_list()
+    draw_image()
 
 
 def build_image_list():
