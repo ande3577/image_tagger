@@ -5,6 +5,7 @@ import tkinter.ttk as ttk
 import os as os
 import json
 from PIL import Image, ImageTk
+import shutil
 
 PEOPLE_FILENAME = "settings.json"
 
@@ -50,10 +51,9 @@ def draw_people():
             p = people[i]
             name = ttk.Label(people_frame, text=p)
             name.grid(row=i,column=0, sticky=[tk.E, tk.W])
-            e = ttk.Button(people_frame, text="Edit", command=lambda p=p, name=name: edit_person_pressed(p))
-            e.grid(row=i, column=1, sticky=[tk.E])
-            b = ttk.Button(people_frame, text="Delete", command=lambda p=p: delete_person_pressed(p))
-            b.grid(row=i, column=2, sticky=[tk.E])
+            ttk.Button(people_frame, text="Export", command=lambda p=p: export_pressed(p)).grid(row=i, column=2, sticky=[tk.E])
+            ttk.Button(people_frame, text="Edit", command=lambda p=p, name=name: edit_person_pressed(p)).grid(row=i, column=3, sticky=[tk.E])
+            ttk.Button(people_frame, text="Delete", command=lambda p=p: delete_person_pressed(p)).grid(row=i, column=4, sticky=[tk.E])
 
         people_frame.columnconfigure(0, weight=1)
 
@@ -73,6 +73,21 @@ def save_settings():
     except Exception as ex:
         messagebox.showerror("Error", ex)
 
+def export_pressed(p):
+    global tagged_members
+    global directory_variable
+
+    output_directory = filedialog.askdirectory()
+    if not output_directory or len(output_directory) == 0:
+        messagebox.showerror("Error.", "Must enter a directory")
+        return
+
+    for image in tagged_members.keys():
+        if p in tagged_members[image]:
+            input_file = os.path.join(directory_variable.get(), image)
+            output_file = os.path.join(output_directory, image)
+            print("Copy %s\n\t to %s\n" % (input_file, output_file))
+            shutil.copyfile(input_file, output_file)
 
 def edit_person_pressed(p):
     global people
@@ -137,6 +152,8 @@ def add_person_button_pressed():
 
 
 def directory_changed():
+    global tagged_members
+    tagged_members = dict()
     save_settings()
     build_image_list()
 
