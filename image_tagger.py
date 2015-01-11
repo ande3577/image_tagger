@@ -152,6 +152,8 @@ def draw_image():
     global image_list_box
     global directory_variable
     global people
+    global tagged_members
+    global check_variable
 
     for child in image_frame.winfo_children():
         child.destroy()
@@ -174,8 +176,16 @@ def draw_image():
         photo_label.grid(row=1,column=0)
 
         row = 2
+        check_variable = dict()
         for p in people:
-            ttk.Checkbutton(image_frame, text=p).grid(row=row, column=0, sticky=[tk.W])
+            try:
+                tagged = p in tagged_members[selected_image]
+            except:
+                tagged = False
+            check_variable[p] = tk.StringVar()
+            check_variable[p].set(tagged)
+            check_button = ttk.Checkbutton(image_frame, text=p, variable=check_variable[p], onvalue=True, offvalue=False)
+            check_button.grid(row=row, column=0, sticky=[tk.W])
             row += 1
 
 
@@ -209,6 +219,7 @@ if __name__ == "__main__":
     global directory_variable
     global image_list_box
     global image_frame
+    global tagged_members
 
     root = tk.Tk()
     n = ttk.Notebook(root)
@@ -248,6 +259,7 @@ if __name__ == "__main__":
     f3.rowconfigure(0, weight=1)
     build_image_list()
 
+    tagged_members = dict()
     image_frame = ttk.Frame(f3)
     image_frame.grid(row=0, column=2)
     draw_image()
