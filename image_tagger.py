@@ -12,6 +12,7 @@ PEOPLE_FILENAME = "settings.json"
 def load_settings():
     global people
     global directory_variable
+    global tagged_members
 
     people = []
     directory_variable.set("")
@@ -27,6 +28,10 @@ def load_settings():
                 directory_variable.set(settings['directory'])
             except Exception:
                 pass
+            try:
+                tagged_members = settings['tagged_members']
+            except Exception:
+                tagged_members = dict()
     except Exception as ex:
         pass
 
@@ -56,11 +61,14 @@ def draw_people():
 def save_settings():
     global people
     global directory_variable
+    global tagged_members
+
     try:
         with open(PEOPLE_FILENAME, mode="w") as f:
             settings = dict()
             settings['people'] = people
             settings['directory'] = directory_variable.get()
+            settings['tagged_members'] = tagged_members
             json.dump(settings, f)
     except Exception as ex:
         messagebox.showerror("Error", ex)
@@ -184,9 +192,29 @@ def draw_image():
                 tagged = False
             check_variable[p] = tk.StringVar()
             check_variable[p].set(tagged)
-            check_button = ttk.Checkbutton(image_frame, text=p, variable=check_variable[p], onvalue=True, offvalue=False)
+            check_button = ttk.Checkbutton(image_frame, text=p, variable=check_variable[p], onvalue=True, offvalue=False, command= lambda image=selected_image, person=p: tagged_members_changed(image, person))
             check_button.grid(row=row, column=0, sticky=[tk.W])
             row += 1
+
+def tagged_members_changed(image, person):
+    global tagged_members
+    global check_variable
+
+    print(image)
+    print(person)
+    print(check_variable[person].get())
+
+    try:
+        tagged_members[image]
+    except KeyError:
+        tagged_members[image] = []
+
+    if check_variable[person].get():
+        tagged_members[image].append(person)
+    else:
+        tagged_members[image].remove(person)
+
+    save_settings()
 
 
 def previous_button_pressed():
@@ -259,7 +287,6 @@ if __name__ == "__main__":
     f3.rowconfigure(0, weight=1)
     build_image_list()
 
-    tagged_members = dict()
     image_frame = ttk.Frame(f3)
     image_frame.grid(row=0, column=2)
     draw_image()
