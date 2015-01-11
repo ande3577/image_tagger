@@ -6,6 +6,7 @@ import os as os
 import json
 from PIL import Image, ImageTk
 import shutil
+import re
 
 PEOPLE_FILENAME = "settings.json"
 
@@ -87,6 +88,9 @@ def export_pressed(p):
             input_file = os.path.join(directory_variable.get(), image)
             output_file = os.path.join(output_directory, image)
             print("Copy %s\n\t to %s\n" % (input_file, output_file))
+            dir = os.path.split(image)[0]
+            if len(dir) > 0:
+                os.makedirs(os.path.join(output_directory, dir))
             shutil.copyfile(input_file, output_file)
 
 def edit_person_pressed(p):
@@ -181,6 +185,7 @@ def build_image_list():
         for file in files:
             if file.endswith( ('.png', '.jpg') ):
                 relative_filepath = os.path.join(relative_path, file)
+                relative_filepath = re.sub("^[\\\\]", "", relative_filepath)
                 image_list_box.insert(tk.END, relative_filepath)
                 image_list.append(relative_filepath)
 
